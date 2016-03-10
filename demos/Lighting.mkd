@@ -1,0 +1,88 @@
+# Lighting
+### Requirements
+ - Location discovery infrastructure `start_location_descriptions.sh`
+ - Light bulb server `start_lightbulb.sh`
+
+##Script
+Import Java Hypermedia client using the Actinium module loading system.
+````javascript
+h = require("hypermedia")
+````
+Register a debugging request inspector that logs all the requests performed by the Hypermedia Client.
+````javascript
+h.Inspector.clear();
+h.Inspector.addRequestInspector(new h.RequestInspector({
+  startRequest: function(id, method, url, p1, p2){
+    log(method+" "+url);
+  }
+}));
+````
+Define a `LightingStateFuture` by extending the `CoREHalResourceFuture` class defined by the Hypermedia Client. The lighting state future object defines the functions `setRGB`, `setHSV`, and `setBrightness` that modify the state of the resource by submitting the form with the link relationship `edit`.
+````javascript
+LightingStateFuture = extend("LightingStateFuture", h.CoREHalResourceFuture, {
+  getMediaType: function() {
+    return "application/x.lighting-state+json";
+  },
+  
+  setRGB: function(r,g,b) {
+    var rgb = {r:r,g:g,b:b};
+    this.getFormRequest("edit", "rgb", {
+      value: rgb,
+      type: "rgb"
+    }).get();
+  },
+  
+  setHSV: function(h,s,v) {
+    var value = {hue:h,saturation:s,brightness:b};
+    this.getFormRequest("edit", "hsv", {
+      value: value,
+      type: "hsv"
+    }).get();
+  },
+  
+  setBrightness: function(brightness) {
+    var value = {brightness:brightness};
+    this.getFormRequest("edit", "brightness", {
+      value: value,
+      type: "brightness"
+    }).get();
+  },
+  
+  getJS: function(){
+    var val = this.get();
+    val.eagerLoad();
+    return JSON.parse(val.toString());
+  }
+});
+````
+Start define a Hypermedia Client instance that starts from the entry point resource directory. 
+````javascript
+client = new h.Client("coap://localhost:5783/")
+````
+Load the resources registered in the entry point resource directory and use the `ThingCrawler` to discover a thing description registered at the location `/CH/ETH/CAB/51` that defines a link with the link relation name `lighting-state`.
+````javascript
+lightbulb = client.resources()
+              .use(new h.ThingCrawler())
+              .withLocationName("/CH/ETH/CAB/51")
+              .findFirst(function (t){
+                  return t.hasLink("lighting-state");
+              });
+````
+Use the light bulb thing description to load the `lighting-state` resource. The resource is described using the previously defined `LightingStateFuture` class.
+````javascript
+lightstate = lightbulb.followLink("lighting-state", function(){
+  return new LightingStateFuture();
+})
+````
+Out put the current value of the lighting state representation.
+````javascript
+lightstate.getJS().value;
+````
+Set light bulbs color to red.
+````javascript
+lightstate.setRGB(255,0,0)
+````
+Reduce the lightbulbs brightness to 50%.
+````javascript
+lightstate.setBrightness(0.5)
+````

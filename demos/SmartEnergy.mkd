@@ -1,0 +1,135 @@
+# Smart Energy
+### Requirements
+ - Location discovery infrastructure `start_location_descriptions.sh`
+ - Thermostat server `start_thermostat.sh`
+ - Devices that provide a power consumption resource
+
+##Script
+Import Java Hypermedia client using the Actinium module loading system.
+````javascript
+h = require("hypermedia")
+````
+Register a debugging request inspector that logs all the requests performed by the Hypermedia Client.
+````javascript
+h.Inspector.clear();
+h.Inspector.addRequestInspector(new h.RequestInspector({
+  startRequest: function(id, method, url, p1, p2){
+    log(method+" "+url);
+  }
+}));
+````
+Define a `HeatingStateFuture` by extending the `CoREHalResourceFuture` class defined by the Hypermedia Client. The heating state future object defines the functions `setTargetTemperature` that sets the target temperature by submitting the form with the link relationship `edit`.
+````javascript
+
+HeatingStateFuture = extend("HeatingStateFuture", h.CoREHalResourceFuture, {
+  getMediaType: function() {
+    return "application/x.heating-state+json";
+  },
+  setTargetTemperature: function(targetTemperature) {
+    this.getFormRequest("edit", targetTemperature.unit, targetTemperature).get();
+  },
+  getJS: function(){
+    var val = this.get();
+    val.eagerLoad();
+    return JSON.parse(val.toString());
+  }
+});
+````
+Start define a Hypermedia Client instance that starts from the entry point resource directory.
+````javascript
+client = new h.Client("coap://localhost:5783/")
+````
+## Power consumption monitoring
+To determine the cumulative power consumption of the location `/CH/ETH/CAB/51`, we define an iterable that returns all the power consumption resources define in the thing description of smart things registered at the location `/CH/ETH/CAB/51`. The iterable is defined by selecting all the thing descriptions returned by the thing crawler that contain a link with the link relation type `power-consumption`. The thing descriptions are then transformed  using the `getPowerConsumption` function that returns a future object representing the power consumption.
+````javascript
+getPowerConsumption = function(thing){
+    return thing.followLink("power-consumption",
+        function(){
+            return new h.CoREHalResourceFuture();
+    });
+};
+power_consumption_resources = client.resources()
+           .use(new h.ThingCrawler())
+           .withLocationName("/CH/ETH/CAB/51")
+           .filter(function (thing){
+               return thing.hasLink("power-consumption");
+           }).transform(getPowerConsumption);
+````
+The iterable returning the power consumption resources provided by thing descriptions registered at the location `/CH/ETH/CAB/51` is used to determine the cumulative power consumption. The `getCumulativePowerConsumption` returns the sum of the power consumptions reported by the smart things.
+
+````javascript
+getCumulativePowerConsumption = function(){
+    power_sum = 0;
+    for each(var resource in power_consumption_resources){
+      try{
+        power_sum += resource.get().get("value");
+      }catch(e){
+      }
+    }
+    return power_sum
+}
+````
+Using the cumulative power consumption function, we define a function that collects the current power consumption every 5 minutes and adds the value to an hourly power consumption  histogram. 
+````javascript
+histogram = [];
+for(var i = 0; i<24;i++){
+  histogram[i] = {count:1,value:0};
+}
+collectPowerUsage = function(){
+  var hour = new Date().hours;
+  histogram[hour].value += getCumulativePowerConsumption();
+  histogram[hour].count += 1;
+}
+app.setInterval(collectPowerUsage, 1000*60*5)
+````
+## Predictive heating
+Load the resources registered in the entry point resource directory and use the `ThingCrawler` to discover a thing description registered at the location `/CH/ETH/CAB/51` that defines a link with the link relation name `heating-state`.
+
+````javascript
+thermostat = client.resources()
+              .use(new h.ThingCrawler())
+              .withLocationName("/CH/ETH/CAB/51")
+              .findFirst(function (t){
+                  return t.hasLink("heating-state");
+              });
+````
+Use the thermostat thing description to load the `heating-state` resource. The resource is described using the previously defined `HeatingStateFuture` class.
+
+````javascript
+temperature = thermostat.followLink("heating-state", function(){
+  return new HeatingStateFuture();
+})
+````
+The collected power consumption histogram is used to predict the users presence on an hourly basis. If the hours power consumption is above the 33rd percentile, the algorithm assumes that the user is present and sets the room temperature to 21°C else the room temperature is reduced to 18°C.
+  
+````javascript
+getPercentile33 = function(){
+  var sorted = histogram.map(function(item){
+  if(item.count == 0){
+    return 0;
+  }
+  return item.value / item.count;
+  }).sort();
+  return sorted[4] 
+};
+var last_change = -1;
+function setThermostat(){
+  var hour = new Date().hours;
+  if(last_change == hour)
+    return;
+  last_change = hour;
+  if (histogram[hour]>=getPercentile33()){
+    temperature.setTargetTemperature({
+      "unit":"celsius", 
+      "targetTemperature":21
+     });
+  }else{
+    temperature.setTargetTemperature({
+      "unit":"celsius", 
+      "targetTemperature":18
+     });
+  }
+  
+}
+app.setInterval(setThermostat, 1000*60*5)
+````

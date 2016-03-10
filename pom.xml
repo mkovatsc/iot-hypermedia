@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+    Copyright (c) 2016 Institute for Pervasive Computing, ETH Zurich.
+   
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    and Eclipse Distribution License v1.0 which accompany this distribution.
+   
+    The Eclipse Public License is available at
+       http://www.eclipse.org/legal/epl-v10.html
+    and the Eclipse Distribution License is available at
+       http://www.eclipse.org/org/documents/edl-v10.html.
+   
+    Contributors:
+       Matthias Kovatsch - creator and main architect
+       Yassin N. Hassan - architect and implementation
+ -->
+
+<project
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0">
+
+    <modelVersion>4.0.0</modelVersion>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.javaVersion>1.8</project.build.javaVersion>
+    </properties>
+
+    <groupId>ch.ethz.inf.vs.hypermedia</groupId>
+    <artifactId>root</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>client</module>
+        <module>hartke-core-lighting</module>
+        <module>hartke-core-lighting-client</module>
+        <module>hartke-core-lighting-server</module>
+        <module>hassan-core-hal</module>
+        <module>hassan-core-hal-experiment</module>
+        <module>hassan-core-hal-use-cases</module>
+        <module>client-example</module>
+    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>eclipse_snapshots</id>
+            <name>Eclipse Snapshots</name>
+            <url>https://repo.eclipse.org/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+
+</project>

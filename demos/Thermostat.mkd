@@ -1,0 +1,73 @@
+# Thermostat
+### Requirements
+ - Location discovery infrastructure `start_location_descriptions.sh`
+ - Thermostat server `start_thermostat.sh`
+
+##Script
+Import Java Hypermedia client using the Actinium module loading system.
+````javascript
+h = require("hypermedia")
+````
+Register a debugging request inspector that logs all the requests performed by the Hypermedia Client.
+````javascript
+h.Inspector.clear();
+h.Inspector.addRequestInspector(new h.RequestInspector({
+  startRequest: function(id, method, url, p1, p2){
+    log(method+" "+url);
+  }
+}));
+````
+Define a `HeatingStateFuture` by extending the `CoREHalResourceFuture` class defined by the Hypermedia Client. The heating state future object defines the functions `setTargetTemperature` that sets the target temperature by submitting the form with the link relationship `edit`.
+````javascript
+
+HeatingStateFuture = extend("HeatingStateFuture", h.CoREHalResourceFuture, {
+  getMediaType: function() {
+    return "application/x.heating-state+json";
+  },
+  setTargetTemperature: function(targetTemperature) {
+    this.getFormRequest("edit", targetTemperature.unit, targetTemperature).get();
+  },
+  getJS: function(){
+    var val = this.get();
+    val.eagerLoad();
+    return JSON.parse(val.toString());
+  }
+}); 
+````
+Start define a Hypermedia Client instance that starts from the entry point resource directory.
+````javascript
+client = new h.Client("coap://localhost:5783/")
+````
+Load the resources registered in the entry point resource directory and use the `ThingCrawler` to discover a thing description registered at the location `/CH/ETH/CAB/51` that defines a link with the link relation name `heating-state`.
+
+````javascript
+thermostat = client.resources()
+              .use(new h.ThingCrawler())
+              .withLocationName("/CH/ETH/CAB/51")
+              .findFirst(function (t){
+                  return t.hasLink("heating-state");
+              });
+````
+Use the thermostat thing description to load the `heating-state` resource. The resource is described using the previously defined `HeatingStateFuture` class.
+
+````javascript
+temperature = thermostat.followLink("heating-state", function(){
+  return new HeatingStateFuture();
+})
+````
+Output the current target temperature.
+````javascript
+temperature.getJS().targetTemperature;
+```` 
+Set target temperature to 25 degrees celsius.
+````javascript
+temperature.setTargetTemperature({
+    "unit":"celsius", 
+    "targetTemperature":25
+});
+````
+Output the updated target temperature.
+````javascript
+temperature.reset();
+temperature.getJS().targetTemperature;
+````

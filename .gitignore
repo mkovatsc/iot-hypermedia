@@ -1,0 +1,27 @@
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Intellij
+.idea/
+*.iml
+*.iws
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/
+
+.refcache/
+
+# Californium
+Californium.properties
+
+
+demos/*.tex
+demos/actinium/appserver/apps/*.cfg
+demos/actinium/appserver/installed/*.js
+demos/actinium/appserver/libs/hypermedia/*.jar
