@@ -29,12 +29,12 @@ import java.util.concurrent.ExecutionException;
 public class TestLightBulb {
 
 	public static void main(String[] args) throws ExecutionException, InterruptedException {
-		HypermediaClient client = new HypermediaClient("coap://localhost:5783/");
-		ThingDescriptionFuture thingdescription = client.resources().use(new ThingCrawler())
-				.withLocationName("/CH/ETH/CAB/51")
-				.findFirstWithLink("lighting-state");
+		HypermediaClient entry = new HypermediaClient("coap://localhost:5783/");
+		ThingDescriptionFuture thing = entry.links().use(new ThingCrawler())
+				.findLocation("/CH/ETH/CAB/51")
+				.findFirstWith("lighting-state");
 
-		LightingStateFuture lightstate = thingdescription.follow("lighting-state", LightingStateFuture::new);
+		LightingStateFuture lightstate = thing.follow("lighting-state", LightingStateFuture::new);
 
 		while (true) {
 			try {

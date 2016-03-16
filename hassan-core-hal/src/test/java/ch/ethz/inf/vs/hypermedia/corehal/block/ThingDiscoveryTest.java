@@ -106,9 +106,9 @@ public class ThingDiscoveryTest extends BaseLocationTest {
         HypermediaClient client = new HypermediaClient(getEndpoint());
 
 
-        ThingDescriptionFuture thing = client.resources()
+        ThingDescriptionFuture thing = client.links()
                 .use(new ThingCrawler())
-                .withLocationName("/CH/ETH/CAB/51")
+                .findLocation("/CH/ETH/CAB/51")
                 .one(ThingDescriptionFuture::new);
         thing.get();
         assertEquals("/CH/ETH/CAB/51", thing.get().getLocation());
@@ -128,7 +128,7 @@ public class ThingDiscoveryTest extends BaseLocationTest {
         String endpoint = getEndpoint();
         HypermediaClient client = new HypermediaClient(endpoint);
 
-        return client.resources()
+        return client.links()
                 .use(new LocationCrawler())
                 .locationEquals(location)
                 .one(LocationDescriptionFuture::new);

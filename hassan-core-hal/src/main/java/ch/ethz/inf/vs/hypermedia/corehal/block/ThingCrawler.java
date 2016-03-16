@@ -80,7 +80,7 @@ public class ThingCrawler implements ContextConsumer<ThingCrawler, BaseFuture>, 
 		return new ThingCrawler(item);
 	}
 
-	public ThingCrawler withLocationName(String locationName) {
+	public ThingCrawler findLocation(String locationName) {
 		return new ThingCrawler(parent, locationName);
 	}
 
@@ -146,7 +146,7 @@ public class ThingCrawler implements ContextConsumer<ThingCrawler, BaseFuture>, 
 		} , pred, (Iterable<ThingDescriptionFuture>) this);
 	}
 
-	public ThingDescriptionFuture findFirstWithLink(String linkRelation) {
+	public ThingDescriptionFuture findFirstWith(String linkRelation) {
 		return findFirst((x) -> x.hasLink(linkRelation));
 	}
 

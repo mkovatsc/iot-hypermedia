@@ -29,12 +29,12 @@ public class TestThermostat {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         HypermediaClient client = new HypermediaClient("coap://localhost:5783/");
-        LinkListFuture resources = client.resources();
+        LinkListFuture resources = client.links();
 
         ThingDescriptionFuture thing = resources
                 .use(new ThingCrawler())
-                .withLocationName("/CH/ETH/CAB/51")
-                .findFirstWithLink("heating-state");
+                .findLocation("/CH/ETH/CAB/51")
+                .findFirstWith("heating-state");
 
         HeatingStateFuture temperature = thing.follow("heating-state", HeatingStateFuture::new);
 

@@ -120,7 +120,7 @@ public class LocationTest extends BaseLocationTest {
         String endpoint = getEndpoint();
         HypermediaClient client = new HypermediaClient(endpoint);
 
-        return client.resources()
+        return client.links()
                 .use(new LocationCrawler())
                 .locationEquals(location)
                 .one(LocationDescriptionFuture::new);

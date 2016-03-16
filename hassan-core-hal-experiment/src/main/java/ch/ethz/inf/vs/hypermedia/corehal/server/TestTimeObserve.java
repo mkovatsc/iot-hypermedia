@@ -28,10 +28,10 @@ public class TestTimeObserve {
 
     public static void main(String[] args) {
         HypermediaClient client = new HypermediaClient("coap://localhost:5783/");
-        ThingDescriptionFuture thing = client.resources()
+        ThingDescriptionFuture thing = client.links()
                 .use(new ThingCrawler())
-                .withLocationName("/CH/ETH/CAB/51")
-                .findFirstWithLink("time");
+                .findLocation("/CH/ETH/CAB/51")
+                .findFirstWith("time");
 		TimeFuture time = thing.follow("time", TimeFuture::new);
 		System.out.println(time.tryGet().getTime());
 		time.observe().onChange((x) -> {

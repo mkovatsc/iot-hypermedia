@@ -114,7 +114,7 @@ public class LocationDiscoveryTest extends BaseLocationTest {
     public void testDiscovery() throws ExecutionException, InterruptedException {
         HypermediaClient client = new HypermediaClient(getEndpoint());
 
-        Object[] locationDesc = client.resources()
+        Object[] locationDesc = client.links()
                 .use(new LocationCrawler())
                 .locationStartWith("/CH/ETH")
                 .stream()
@@ -130,7 +130,7 @@ public class LocationDiscoveryTest extends BaseLocationTest {
     public void testDiscovery2() throws ExecutionException, InterruptedException {
         HypermediaClient client = new HypermediaClient(getEndpoint());
 
-        Object[] locationDesc = client.resources()
+        Object[] locationDesc = client.links()
                 .use(new LocationCrawler())
                 .matchingPrefix("/CH/ETH/CAB")
                 .stream()
@@ -146,7 +146,7 @@ public class LocationDiscoveryTest extends BaseLocationTest {
     public void testDiscovery3() throws ExecutionException, InterruptedException {
         HypermediaClient client = new HypermediaClient(getEndpoint());
 
-        Object[] locationDesc = client.resources()
+        Object[] locationDesc = client.links()
                 .use(new LocationCrawler())
                 .matchingPrefix("/CH/ETH/CAB/51")
                 .stream()
@@ -161,7 +161,7 @@ public class LocationDiscoveryTest extends BaseLocationTest {
 
     public LocationDescriptionFuture findLocation(String location) {
         HypermediaClient client = new HypermediaClient(getEndpoint());
-        return client.resources()
+        return client.links()
                 .use(new LocationCrawler())
                 .locationEquals(location)
                 .one(LocationDescriptionFuture::new);

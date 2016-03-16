@@ -47,7 +47,7 @@ public class HypermediaClient {
 		}
 	}
 
-	public LinkListFuture resources() {
+	public LinkListFuture links() {
 		return discover().resourceLookup();
 	}
 
