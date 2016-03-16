@@ -16,5 +16,4 @@
 #    Yassin N. Hassan - architect and implementation
 #*******************************************************************************
 cd "$(dirname "$0")"
-cd actinium
-java -jar coap-polyfill-*.jar
+java -jar cf-polyfill.jar
