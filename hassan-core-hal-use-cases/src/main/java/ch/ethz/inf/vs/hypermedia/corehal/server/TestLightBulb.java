@@ -39,6 +39,7 @@ public class TestLightBulb {
 		while (true) {
 			try {
 				System.err.println("---Set color");
+				// submits a form based on application/x.lightstate representation format
 				lightstate.setHSV((int) (360 * Math.random()), 1, 1);
 			} catch (ExecutionException e) {
 				System.err.println("---FAILED");

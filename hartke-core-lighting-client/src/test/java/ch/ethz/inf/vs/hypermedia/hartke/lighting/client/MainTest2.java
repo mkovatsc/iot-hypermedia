@@ -32,6 +32,8 @@ import ch.ethz.inf.vs.hypermedia.hartke.lighting.server.LightServer;
 import ch.ethz.inf.vs.hypermedia.hartke.lighting.server.LightServer.ConfigURL;
 import ch.ethz.inf.vs.hypermedia.hartke.lighting.server.LightServer.InlineConfig;
 import ch.ethz.inf.vs.hypermedia.hartke.lighting.server.LightServer.UpdateType;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Objects;
@@ -54,6 +56,7 @@ public class MainTest2 {
 		TestUtils.setupEnviroment();
 	}
 
+	@Ignore
 	@Test
 	public void testUpdateAlt() throws Exception {
 		String src = UUID.randomUUID().toString();
@@ -84,6 +87,7 @@ public class MainTest2 {
 		light.destroy();
 	}
 
+	@Ignore
 	@Test
 	public void testUpdateAlt2() throws Exception {
 		String src = UUID.randomUUID().toString();

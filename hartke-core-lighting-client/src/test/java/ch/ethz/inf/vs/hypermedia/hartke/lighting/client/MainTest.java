@@ -30,6 +30,8 @@ import ch.ethz.inf.vs.hypermedia.hartke.lighting.server.LightServer;
 import ch.ethz.inf.vs.hypermedia.hartke.lighting.server.LightServer.ConfigURL;
 import ch.ethz.inf.vs.hypermedia.hartke.lighting.server.LightServer.InlineConfig;
 import ch.ethz.inf.vs.hypermedia.hartke.lighting.server.LightServer.UpdateType;
+
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -66,6 +68,7 @@ public class MainTest {
 		return parameters;
 	}
 
+	@Ignore
 	@Test
 	public void testUpdateLightingConfig() throws Exception {
 		String src = UUID.randomUUID().toString();
@@ -94,14 +97,16 @@ public class MainTest {
 		light.destroy();
 	}
 
+	@Ignore
 	@Test
 	public void testUpdateLightingConfigReload() throws Exception {
 		String src = UUID.randomUUID().toString();
 
 		BulletinBoardServer bulletinServer = BulletinBoardServer.start(0, boardType, true);
 		String endpoint = String.format("coap://localhost:%d/", bulletinServer.getPort());
+		System.err.println("Test Bulletin at " + endpoint);
 		LightServer light = LightServer.start(0, "test", "test", inlineConfig, configURL, updateMode, endpoint, true);
-
+		
 		HypermediaClient client = new HypermediaClient(endpoint);
 		LinkListFuture discover = client.discover();
 		// Read LightingConfig

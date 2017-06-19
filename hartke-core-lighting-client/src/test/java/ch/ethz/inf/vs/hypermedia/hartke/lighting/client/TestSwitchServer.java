@@ -31,6 +31,8 @@ import ch.ethz.inf.vs.hypermedia.hartke.lighting.server.LightServer;
 import ch.ethz.inf.vs.hypermedia.hartke.lighting.server.LightServer.ConfigURL;
 import ch.ethz.inf.vs.hypermedia.hartke.lighting.server.LightServer.InlineConfig;
 import ch.ethz.inf.vs.hypermedia.hartke.lighting.server.LightServer.UpdateType;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Objects;
@@ -53,6 +55,7 @@ public class TestSwitchServer {
 		TestUtils.setupEnviroment();
 	}
 
+	@Ignore
 	@Test
 	public void testSwitch() throws Exception {
 		String src = UUID.randomUUID().toString();
@@ -89,6 +92,7 @@ public class TestSwitchServer {
 		light2.destroy();
 	}
 
+	@Ignore
 	@Test
 	public void testSwitch2() throws Exception {
 		String src = UUID.randomUUID().toString();
@@ -127,6 +131,7 @@ public class TestSwitchServer {
 		lightServer2.destroy();
 	}
 
+	@Ignore
 	@Test
 	public void testSwitch3() throws Exception {
 		String src = UUID.randomUUID().toString();
@@ -163,6 +168,7 @@ public class TestSwitchServer {
 		lightServer2.destroy();
 	}
 
+	@Ignore
 	@Test
 	public void testTermination() throws Exception {
 		String src = UUID.randomUUID().toString();

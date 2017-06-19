@@ -24,8 +24,8 @@ import ch.ethz.inf.vs.hypermedia.hartke.lighting.block.BulletinBoardFuture;
 import ch.ethz.inf.vs.hypermedia.hartke.lighting.model.LightingConfig;
 import ch.ethz.inf.vs.hypermedia.hartke.lighting.model.Link;
 import ch.ethz.inf.vs.hypermedia.hartke.lighting.model.ThingDescription;
-import ch.ethz.inf.vs.wot.demo.devices.utils.DeviceFrame;
-import ch.ethz.inf.vs.wot.demo.devices.utils.DevicePanel;
+import ch.ethz.inf.vs.wot.demo.utils.devices.DeviceFrame;
+import ch.ethz.inf.vs.wot.demo.utils.devices.DevicePanel;
 
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapServer;
@@ -51,7 +51,7 @@ import java.util.UUID;
  */
 public class LightServer extends CoapServer {
 
-	static final String ENTRYPOINT = "coap://129.132.130.252:5082/";
+	static final String ENTRYPOINT = "coap://localhost:5082/";
 
 	public static boolean test;
 
@@ -214,6 +214,7 @@ public class LightServer extends CoapServer {
 
 	public void registerSelf() {
 		try {
+			System.out.println("Registry entry point " + entrypoint);
 			new HypermediaClient(entrypoint).discover().getByMediaType(BulletinBoardFuture::new).getFormRequest("create-item", getThingDescription(), false).get();
 		} catch (Exception e) {
 			e.printStackTrace();

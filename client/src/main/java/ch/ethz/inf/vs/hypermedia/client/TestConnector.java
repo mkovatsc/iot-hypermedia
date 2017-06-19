@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by ynh on 18/11/15.
  */
 public class TestConnector implements Connector {
-	static AtomicInteger portGenerator = new AtomicInteger(1000);
+	static AtomicInteger portGenerator = new AtomicInteger(10000);
 	static Map<Integer, TestConnector> testConnectors = new HashMap<>();
 	static ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 	final int port;
@@ -63,9 +63,8 @@ public class TestConnector implements Connector {
 
 	@Override
 	public void start() throws IOException {
-		System.err.println("Start" + port);
+		System.err.println("Start-" + port);
 		testConnectors.put(port, this);
-
 	}
 
 	@Override

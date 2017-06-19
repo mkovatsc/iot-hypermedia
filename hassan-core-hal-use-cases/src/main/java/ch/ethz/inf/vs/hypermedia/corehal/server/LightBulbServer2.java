@@ -24,8 +24,8 @@ import ch.ethz.inf.vs.hypermedia.corehal.model.*;
 import ch.ethz.inf.vs.hypermedia.corehal.values.BrightnessValue;
 import ch.ethz.inf.vs.hypermedia.corehal.values.HSVValue;
 import ch.ethz.inf.vs.hypermedia.corehal.values.RGBValue;
-import ch.ethz.inf.vs.wot.demo.devices.utils.DeviceFrame;
-import ch.ethz.inf.vs.wot.demo.devices.utils.DevicePanel;
+import ch.ethz.inf.vs.wot.demo.utils.devices.DeviceFrame;
+import ch.ethz.inf.vs.wot.demo.utils.devices.DevicePanel;
 
 import com.google.gson.JsonParseException;
 import org.eclipse.californium.core.CoapResource;

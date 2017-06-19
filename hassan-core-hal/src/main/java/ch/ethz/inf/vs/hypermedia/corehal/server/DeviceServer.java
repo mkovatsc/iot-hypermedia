@@ -66,7 +66,7 @@ public class DeviceServer extends CoapServer implements RegisteredServer {
 	}
 
 	public static void main(String[] args) {
-		// create servr
+		// create server
 		CoapServer server = new DeviceServer("/CH/ETH/CAB", true);
 		server.start();
 		System.out.printf(ResourceDirectory.class.getSimpleName() + " listening on port %d.\n", server.getEndpoints().get(0).getAddress().getPort());
